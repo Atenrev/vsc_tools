@@ -1,0 +1,11 @@
+Host VSC
+    HostName login-genius.hpc.kuleuven.be
+    Port 22
+    User vscXXXXX
+    IdentityFile <path_to_id_file>
+
+Host k*
+    HostName %h
+    User vscXXXXX
+    ProxyJump VSC
+    IdentityFile <path_to_id_file>
