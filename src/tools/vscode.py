@@ -58,7 +58,11 @@ def launch_vscode(project_folder: str, hostname: str, config_file: str, allocati
     while True:
         user_input = input("Press 'r' to relaunch VS Code or 'q' to quit: ").strip().lower()
         if user_input == 'r':
-            open_vscode_remote(compute_node, project_folder=project_folder)
+            try:
+                open_vscode_remote(compute_node, project_folder=project_folder)
+            except Exception as e:
+                logging.error(f"Failed to open VS Code remote session: {e}")
+                return
         elif user_input == 'q':
             logging.info("Quitting the session.")
             break
