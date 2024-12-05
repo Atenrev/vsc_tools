@@ -1,7 +1,7 @@
 import paramiko
 import logging
 
-from src.utils import read_private_key, run_local_command, ssh_command
+from src.utils import read_private_key, ssh_command
 
 
 class Remote:
@@ -14,8 +14,6 @@ class Remote:
         self.port = int(host.get("port", 22))
         self.username = host["user"]
         self.identity_file_path = host["identityfile"][0]
-        self.private_key: paramiko.PKey = read_private_key(
-            self.identity_file_path)
 
         self.client = None
 
@@ -24,12 +22,14 @@ class Remote:
         self.client.load_system_host_keys()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
+        private_key: paramiko.PKey = read_private_key(self.identity_file_path)
+
         try:
             self.client.connect(
                 hostname=self.hostname,
                 username=self.username,
                 port=self.port,
-                pkey=self.private_key,
+                pkey=private_key,
                 look_for_keys=False,
             )
         except Exception as e:
@@ -47,7 +47,7 @@ class Remote:
                     hostname=self.hostname,
                     username=self.username,
                     port=self.port,
-                    pkey=self.private_key,
+                    pkey=private_key,
                     look_for_keys=False,
                 )
             except Exception as e:
@@ -60,7 +60,7 @@ class Remote:
         if self.client is None:
             raise Exception(
                 "Connection not established. Call connect() first.")
-            
+
         if isinstance(command, list):
             command = " ".join(command)
 
