@@ -14,7 +14,7 @@ class ComputeNode:
 
     def allocate(self, time_limit="01:00:00"):
         logging.info("Allocating compute node...")
-        salloc_cmd = f"salloc -n 1 -t {time_limit} --ntasks=4 --gpus-per-node=1 -A lcomputervision --partition=gpu --cluster=wice"
+        salloc_cmd = f"salloc -n 1 -t {time_limit} --ntasks=4 --gpus-per-node=1 -A lcomputervision --partition=gpu_v100 --cluster=genius"
 
         stdout, stderr = self.login_node.run(salloc_cmd, get_pty=True)
 

@@ -20,7 +20,9 @@ And the following python packages:
 
 (You can install these packages by running ```pip install -r requirements.txt```)
 
-You will also need to create a hosts configuration file. You'll find a template under ```configs/hosts_template``` which you can copy and modify to your needs.
+You will also need to modify your hosts configuration file. You'll find a template with what you have to add under ```configs/hosts_template``` which you can copy and modify to your needs. 
+
+*Note: this script will modify your hosts configuration file to add a new entry for compute nodes dinamically, so you don't have to do it manually.*
 
 ## VSCode
 To launch a remote session on a compute node, you can use the following command:

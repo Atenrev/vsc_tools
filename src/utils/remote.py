@@ -11,7 +11,8 @@ class Remote:
         self.hostname = host["hostname"]
         self.port = int(host.get("port", 22))
         self.username = host["user"]
-        self.private_key: paramiko.PKey = read_private_key(host["identityfile"][0])
+        self.identity_file_path = host["identityfile"][0]
+        self.private_key: paramiko.PKey = read_private_key(self.identity_file_path)
         
         self.client = None
 

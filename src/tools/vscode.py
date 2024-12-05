@@ -1,29 +1,36 @@
-import argparse
-import getpass
-import paramiko
 import subprocess
-import re
-import time
 import logging
 
-from src.utils import run_local_command, Remote, ComputeNode
+from src.utils import run_local_command, Remote, ComputeNode, add_host_to_ssh_config
 
 
 CODE_COMMAND = "code"
 
 
-def open_vscode_remote(compute_node: ComputeNode, project_folder: str = "~"):
+def open_vscode_remote(compute_node: ComputeNode, config_file: str, project_folder: str = "~"):
     """Open VS Code remote session via PowerShell."""
+    logging.info("Opening VS Code remote session...")
+    
+    assert compute_node.address is not None, "Compute node address is not set."
+    
+    add_host_to_ssh_config(
+        hosts_file_path=config_file,
+        proxyjump="VSC",
+        hostname=compute_node.address,
+        user=compute_node.login_node.username,
+        identityfile=compute_node.login_node.identity_file_path
+    )
+    
     command = [
         CODE_COMMAND,
         "--remote",
-        f"ssh-remote+{compute_node.address}",
+        "ssh-remote+vsc_compute_node",
         project_folder,
     ]
     
     try:
         # Execute the command
-        run_local_command(" ".join(command))
+        run_local_command(command)
         logging.info(
             f"VS Code successfully launched for remote: {str(compute_node)}")
     except subprocess.CalledProcessError as e:
@@ -49,7 +56,7 @@ def launch_vscode(project_folder: str, hostname: str, config_file: str, allocati
 
     # Open VS Code to the assigned machine
     try:
-        open_vscode_remote(compute_node, project_folder=project_folder)
+        open_vscode_remote(compute_node, config_file, project_folder=project_folder)
     except Exception as e:
         logging.error(f"Failed to open VS Code remote session: {e}")
         return
@@ -59,7 +66,7 @@ def launch_vscode(project_folder: str, hostname: str, config_file: str, allocati
         user_input = input("Press 'r' to relaunch VS Code or 'q' to quit: ").strip().lower()
         if user_input == 'r':
             try:
-                open_vscode_remote(compute_node, project_folder=project_folder)
+                open_vscode_remote(compute_node, config_file, project_folder=project_folder)
             except Exception as e:
                 logging.error(f"Failed to open VS Code remote session: {e}")
                 return

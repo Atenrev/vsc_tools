@@ -10,7 +10,7 @@ def parse_args():
     parser.add_argument("tool", default="vscode", type=str, help="The tool to use.")
     
     # Connection arguments
-    parser.add_argument("--config_file", default="configs/hosts", type=str, help="Path to the SSH config file.")
+    parser.add_argument("--config_file", type=str, help="Path to the SSH config file.")
     parser.add_argument("--hostname", default="VSC", type=str, help="Hostname or IP address of the remote machine.")
     parser.add_argument("--username", type=str, help="Username to use for SSH connection.")
     parser.add_argument("--identity_file", type=str, help="Path to the private key file.")
