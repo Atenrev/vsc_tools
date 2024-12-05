@@ -15,6 +15,9 @@ def parse_args():
     parser.add_argument("--username", type=str, help="Username to use for SSH connection.")
     parser.add_argument("--identity_file", type=str, help="Path to the private key file.")
     
+    # Compute node arguments
+    parser.add_argument("--allocation_time", default="01:00:00", type=str, help="Time limit for compute node allocation.")
+    
     # VSCode arguments
     parser.add_argument("--project_folder", type=str, help="Path to the project folder on the remote machine.")
     
@@ -22,10 +25,16 @@ def parse_args():
 
 
 def main():
+    logging.basicConfig(level=logging.INFO)
     args = parse_args()
     
     if args.tool == "vscode":
-        launch_vscode(args)
+        launch_vscode(
+            args.project_folder, 
+            args.hostname, 
+            args.config_file,
+            allocation_time=args.allocation_time
+        )
     else:
         logging.error("Invalid tool specified.")
         return 1
