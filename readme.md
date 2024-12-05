@@ -6,6 +6,7 @@ A repository for useful tools for the Vlaams Supercomputer Centrum (VSC) cluster
   - [Index](#index)
   - [Prerequisites](#prerequisites)
   - [VSCode](#vscode)
+    - [Relaunching a session](#relaunching-a-session)
   - [Contributing](#contributing)
 
 ## Prerequisites
@@ -39,6 +40,9 @@ For more information, run:
 ```bash
 python vsc_tools --help
 ```
+
+### Relaunching a session
+You closed VSCode accidentally and want to relaunch the session? No problem! Just type 'r' in the terminal and press enter. So long as the terminal is still active, you'll be able to reconnect to it.
 
 ## Contributing
 Pull requests are welcome.
