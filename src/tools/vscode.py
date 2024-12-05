@@ -14,22 +14,21 @@ CODE_COMMAND = "code"
 
 def open_vscode_remote(compute_node: ComputeNode, project_folder: str = "~"):
     """Open VS Code remote session via PowerShell."""
+    command = [
+        CODE_COMMAND,
+        "--remote",
+        f"ssh-remote+{compute_node.address}",
+        project_folder,
+    ]
+    
     try:
-        # Construct the PowerShell command
-        command = [
-            CODE_COMMAND,
-            "--remote",
-            f"ssh-remote+{compute_node.address}",
-            project_folder,
-        ]
         # Execute the command
-        # subprocess.run(command, check=True)
         run_local_command(" ".join(command))
         logging.info(
             f"VS Code successfully launched for remote: {str(compute_node)}")
     except subprocess.CalledProcessError as e:
-        logging.error(f"Failed to open VS Code remote session: {e}")
-
+        raise Exception(f"Failed to open VS Code remote session: {e}")
+        
 
 def launch_vscode(project_folder: str, hostname: str, config_file: str, allocation_time: str = "01:00:00"):
     logging.info("Opening an interactive session on the remote machine...")
@@ -42,14 +41,24 @@ def launch_vscode(project_folder: str, hostname: str, config_file: str, allocati
     compute_node = ComputeNode(login_node)
     compute_node.allocate(time_limit=allocation_time)
 
-    if compute_node:
-        logging.info(f"Assigned machine: {str(compute_node)}")
+    if not compute_node:
+        logging.error("Failed to allocate compute node.")
+        return 
+    
+    logging.info(f"Assigned machine: {str(compute_node)}")
 
-        # Open VS Code to the assigned machine
+    # Open VS Code to the assigned machine
+    try:
         open_vscode_remote(compute_node, project_folder=project_folder)
+    except Exception as e:
+        logging.error(f"Failed to open VS Code remote session: {e}")
+        return
 
-        # Loop to keep the session alive
-        while True:
-            time.sleep(1)
-    else:
-        logging.error("Failed to get assigned machine.")
+    # Loop to keep the session alive
+    while True:
+        user_input = input("Press 'r' to relaunch VS Code or 'q' to quit: ").strip().lower()
+        if user_input == 'r':
+            open_vscode_remote(compute_node, project_folder=project_folder)
+        elif user_input == 'q':
+            logging.info("Quitting the session.")
+            break
