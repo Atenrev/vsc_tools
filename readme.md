@@ -27,12 +27,17 @@ You will also need to modify your hosts configuration file. You'll find a templa
 ## VSCode
 To launch a remote session on a compute node, you can use the following command:
 ```bash
-python vscode.py --hostname <hostname> --username <vsc_username> --identity_file <path_to_private_key> --allocation_time <XX:XX:XX> --project_folder <path_to_project_folder_in_cluster>
+python vsc_tools --hostname <hostname> --username <vsc_username> --identity_file <path_to_private_key> --group <vsc_group> --project_folder <path_to_project_folder_in_cluster>
 ```
 
 For example:
 ```bash
-python vscode.py --hostname VSC --username vscXXXXX --identity_file ~/.ssh/id_rsa --allocation_time 01:00:00 --project_folder /user/leuven/XXX/vscXXXXX/projectX
+python vsc_tools --hostname VSC --username vscXXXXX --identity_file ~/.ssh/id_rsa --allocation_time 01:00:00 --group lcomputervision --project_folder /user/leuven/XXX/vscXXXXX/projectX
+```
+
+For more information, run:
+```bash
+python vsc_tools --help
 ```
 
 ## Contributing

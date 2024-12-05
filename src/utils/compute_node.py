@@ -5,6 +5,7 @@ import logging
 from typing import Optional
 
 from src.utils import Remote
+from src.utils.data import ComputeNodeParams
 
 
 class ComputeNode:
@@ -12,9 +13,18 @@ class ComputeNode:
         self.login_node = login_node
         self.address: Optional[str] = None
 
-    def allocate(self, time_limit="01:00:00"):
+    def allocate(self, compute_node_params: ComputeNodeParams):
         logging.info("Allocating compute node...")
-        salloc_cmd = f"salloc -n 1 -t {time_limit} --ntasks=4 --gpus-per-node=1 -A lcomputervision --partition=gpu_v100 --cluster=genius"
+        salloc_cmd = [
+            "salloc",
+            "-n", "1",
+            "-t", compute_node_params.allocation_time,
+            "--ntasks", str(compute_node_params.cores),
+            "--gpus-per-node=1",
+            "-A", compute_node_params.group,
+            "--partition", compute_node_params.partition,
+            "--cluster", compute_node_params.cluster
+        ]
 
         stdout, stderr = self.login_node.run(salloc_cmd, get_pty=True)
 

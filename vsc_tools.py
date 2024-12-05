@@ -2,6 +2,7 @@ import argparse
 import logging
 
 from src.tools import launch_vscode
+from src.utils.data import ComputeNodeParams
 
 
 def parse_args():
@@ -17,6 +18,10 @@ def parse_args():
     
     # Compute node arguments
     parser.add_argument("--allocation_time", default="01:00:00", type=str, help="Time limit for compute node allocation.")
+    parser.add_argument("--group", type=str, help="Group to use for compute node allocation.")
+    parser.add_argument("--cluster", default="genius", type=str, help="Cluster to allocate the compute node on.")
+    parser.add_argument("--partition", default="gpu_v100", type=str, help="Partition to allocate the compute node on.")
+    parser.add_argument("--cores", default=4, type=int, help="Number of cores to allocate.")
     
     # VSCode arguments
     parser.add_argument("--project_folder", type=str, help="Path to the project folder on the remote machine.")
@@ -28,17 +33,24 @@ def main():
     logging.basicConfig(level=logging.INFO)
     args = parse_args()
     
+    compute_node_params = ComputeNodeParams(
+        group=args.group,
+        allocation_time=args.allocation_time,
+        cluster=args.cluster,
+        partition=args.partition,
+        cores=args.cores
+    )
+    
     if args.tool == "vscode":
         launch_vscode(
             args.project_folder, 
             args.hostname, 
             args.config_file,
-            allocation_time=args.allocation_time
+            compute_node_params
         )
     else:
         logging.error("Invalid tool specified.")
-        return 1
-        
+    
         
 if __name__ == "__main__":
     main()
